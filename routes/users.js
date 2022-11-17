@@ -7,10 +7,10 @@ const playlistModel = require('../models/playlistModel');
 /* GET users listing. */
 //Lay danh sach user (Da xong)
 //http://localhost:3000/users/get-user 
-router.get('/get-user', async function (req, res, next) {
+router.get('/get-users', async function (req, res, next) {
   try {
-    const user = await userModel.find({});
-    res.json({ error: false, responeTime: new Date(), statusCode: 200, data: user });
+    const users = await userModel.find({});
+    res.json({ error: false, responeTime: new Date(), statusCode: 200, data: users });
   } catch (error) {
     res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
   }
