@@ -4,8 +4,8 @@ var router = express.Router();
 const product_model = require('../models/productModel');
 
 //Lay danh sach playlist (Da xong)
-//http://localhost:3000/product/get-product
-router.get('/get-product', async function (req, res, next) {
+//http://localhost:3000/product/get-products
+router.get('/get-products', async function (req, res, next) {
     try {
         const products = await product_model.find({});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: products });
@@ -25,12 +25,12 @@ router.get('/chi-tiet-product', async function (req, res, next) {
     }
 });
 
-//Lay chi tiet product theo user 
-//http://localhost:3000/product/chi-tiet-product-theo-user
-router.get('/chi-tiet-product-theo-user', async function (req, res, next) {
+//Lay products theo userid 
+//http://localhost:3000/product/get-products-theo-userid
+router.post('/get-products-theo-userid', async function (req, res, next) {
     try {
-        const product = await product_model.findOne({'userId': req.body.userId});
-        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: product });
+        const products = await product_model.findOne({'userId': req.body.userId});
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: products });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
     }

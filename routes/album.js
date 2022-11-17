@@ -15,9 +15,9 @@ router.get('/get-album', async function (req, res, next) {
     }
 });
 
-//Lay danh sach album theo user(Da xong)
-//http://localhost:3000/album/get-album-theo-user
-router.get('/get-album-theo-user', async function (req, res, next) {
+//Lay danh sach album theo userid(Da xong)
+//http://localhost:3000/album/get-albums-theo-userid
+router.post('/get-albums-theo-userid', async function (req, res, next) {
     try {
         const albums = await album_model.findOne({'userId': req.body.userId});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: albums });

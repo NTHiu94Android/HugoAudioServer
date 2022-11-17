@@ -4,8 +4,8 @@ var router = express.Router();
 const playlist_model = require('../models/playlistModel');
 
 //Lay danh sach playlist (Da xong)
-//http://localhost:3000/playlist/get-playlist
-router.get('/get-playlist', async function (req, res, next) {
+//http://localhost:3000/playlist/get-playlists
+router.get('/get-playlists', async function (req, res, next) {
     try {
         const playlists = await playlist_model.find({});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: playlists });
@@ -14,11 +14,11 @@ router.get('/get-playlist', async function (req, res, next) {
     }
 });
 
-//Lay danh sach playlist theo user
-//http://localhost:3000/playlist/get-playlist-theo-user
-router.get('/get-playlist-theo-user', async function (req, res, next) {
+//Lay danh sach playlist theo userid
+//http://localhost:3000/playlist/get-playlists-theo-userid
+router.post('/get-playlists-theo-userid', async function (req, res, next) {
     try {
-        const playlists = await playlist_model.findOne({'userId': req.body.userId});
+        const playlists = await playlist_model.find({'userId': req.body.userId});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: playlists });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
@@ -48,8 +48,8 @@ router.post('/them-moi-playlist', async function (req, res, next) {
 router.patch('/cap-nhat-playlist/:id', async function (req, res, next) {
     try {
         await playlist_model.findByIdAndUpdate(req.params.id, req.body);
-        const playlist_new = await playlist_model.findById(req.params.id);
-        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: playlist_new });
+        const playlist = await playlist_model.findById(req.params.id);
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: playlist });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
     }
