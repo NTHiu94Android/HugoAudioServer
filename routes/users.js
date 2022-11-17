@@ -60,7 +60,8 @@ router.post('/dang-ky', async function (req, res, next) {
 //http://localhost:3000/users/cap-nhat/:id
 router.patch('/cap-nhat/:id', async function (req, res, next) {
   try {
-    const us = await userModel.findByIdAndUpdate(req.params.id, req.body);
+    await userModel.findByIdAndUpdate(req.params.id, req.body);
+    const us = await userModel.findById(req.params.id);
     res.json({ error: false, responeTime: new Date(), statusCode: 200, data: us });
   } catch (error) {
     res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
@@ -71,7 +72,8 @@ router.patch('/cap-nhat/:id', async function (req, res, next) {
 //http://localhost:3000/users/xoa/:id
 router.delete('/xoa/:id', async function (req, res, next) {
   try {
-    const us = await userModel.findByIdAndDelete(req.params.id, req.body);
+    await userModel.findByIdAndDelete(req.params.id, req.body);
+    const us = await userModel.findById(req.params.id);
     res.json({ error: false, responeTime: new Date(), statusCode: 200, data: us });
   } catch (error) {
     res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
