@@ -14,6 +14,17 @@ router.get('/get-playlist', async function (req, res, next) {
     }
 });
 
+//Lay danh sach playlist theo user
+//http://localhost:3000/playlist/get-playlist-theo-user
+router.get('/get-playlist-theo-user', async function (req, res, next) {
+    try {
+        const playlists = await playlist_model.findOne({'userId': req.body.userId});
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: playlists });
+    } catch (error) {
+        res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
+    }
+});
+
 //Them moi playlist (Da xong)
 //http://localhost:3000/playlist/them-moi-playlist
 router.post('/them-moi-playlist', async function (req, res, next) {

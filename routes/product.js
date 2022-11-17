@@ -14,11 +14,22 @@ router.get('/get-product', async function (req, res, next) {
     }
 });
 
-//Lay chi tiet product
+//Lay chi tiet product theo id
 //http://localhost:3000/product/chi-tiet-product
 router.get('/chi-tiet-product', async function (req, res, next) {
     try {
         const product = await product_model.findOne({'_id': req.body.product._id});
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: product });
+    } catch (error) {
+        res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
+    }
+});
+
+//Lay chi tiet product theo user 
+//http://localhost:3000/product/chi-tiet-product-theo-user
+router.get('/chi-tiet-product-theo-user', async function (req, res, next) {
+    try {
+        const product = await product_model.findOne({'userId': req.body.userId});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: product });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });

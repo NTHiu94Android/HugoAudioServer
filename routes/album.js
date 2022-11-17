@@ -15,6 +15,17 @@ router.get('/get-album', async function (req, res, next) {
     }
 });
 
+//Lay danh sach album theo user(Da xong)
+//http://localhost:3000/album/get-album-theo-user
+router.get('/get-album-theo-user', async function (req, res, next) {
+    try {
+        const albums = await album_model.findOne({'userId': req.body.userId});
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: albums });
+    } catch (error) {
+        res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
+    }
+});
+
 //Them moi album (Da xong)
 //http://localhost:3000/album/them-moi-album
 router.post('/them-moi-album', async function (req, res, next) {
