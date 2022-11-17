@@ -6,6 +6,7 @@ const albumModel = new Schema({
   genre: { type: String, default: ''},
   releaseDate: { type: Date, default: Date.now() },
   userId: {type: String, default: ''},
+  image: { type: String, default: ''},
   //updateAt: { type: Date, default: Date.now },
 });
 

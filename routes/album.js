@@ -37,7 +37,6 @@ router.post('/them-moi-album', async function (req, res, next) {
 router.patch('/cap-nhat-album/:id', async function (req, res, next) {
     try {
         const album = await album_model.findByIdAndUpdate(req.params.id, req.body);
-        await album.save();
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: album });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 200, message: error.message });
@@ -49,11 +48,6 @@ router.patch('/cap-nhat-album/:id', async function (req, res, next) {
 router.delete('/xoa-album/:id', async function (req, res, next) {
     try {
         const album = await album_model.findByIdAndDelete(req.params.id, req.body);
-        if (!album) {
-            res.status(404).send('No item found');
-            return;
-        }
-
         //Xoa album xoa luon product trong album
         const products = await product_model.find({ 'albumId': album._id });
         for (let index = 0; index < products.length; index++) {

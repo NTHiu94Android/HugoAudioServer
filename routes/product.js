@@ -47,7 +47,6 @@ router.post('/them-moi-product', async function (req, res, next) {
 router.patch('/cap-nhat-product/:id', async function (req, res, next) {
     try {
         const product = await product_model.findByIdAndUpdate(req.params.id, req.body);
-        await product.save();
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: product });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 200, message: error.message });
@@ -59,10 +58,6 @@ router.patch('/cap-nhat-product/:id', async function (req, res, next) {
 router.delete('/xoa-product/:id', async function (req, res, next) {
     try {
         const product = await product_model.findByIdAndDelete(req.params.id, req.body);
-        if (!product) {
-            res.status(404).send('No item found');
-            return;
-        }
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: product });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
