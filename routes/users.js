@@ -26,15 +26,15 @@ router.post('/dang-nhap', async function (req, res, next) {
   try {
     const user = await userModel.findOne({ 'username': req.body.username });
     if (user != null) {
-      if (user.username == req.body.username && await bcrypt.compare(req.body.password, user.password)) {
+      if(await bcrypt.compare(req.body.password, user.password)){
         const token = jwt.sign(
           { username: user.username, _id: user._id },
           process.env.JWT_SECRET,
           { expiresIn: '900s' }
         );
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: user, accessToken: token });
-      } else {
-        res.status(422).json({ error: true, responeTime: new Date(), statusCode: 422, message: 'Invalid username' });
+      }else{
+        res.status(422).json({ error: true, responeTime: new Date(), statusCode: 422, message: 'Invalid password' });
       }
     } else {
       res.status(422).json({ error: true, responeTime: new Date(), statusCode: 422, message: 'Invalid username' });
@@ -50,7 +50,7 @@ router.post('/dang-ky', upload.single("image"), async function (req, res, next) 
   try {
 
     const user = await userModel.findOne({ 'username': req.body.username });
-    
+
     if (user == null) {
       //Tao moi user
       const username = req.body.username;
@@ -61,12 +61,12 @@ router.post('/dang-ky', upload.single("image"), async function (req, res, next) 
       const gender = req.body.gender;
       const userType = req.body.userType;
       const image = req.body.image;
-      
+
       // if(!req.file){
       //   console.log(req.file);
       //   const result = await cloudinary.uploader.upload(req.file.path);
       //   image = result.secure_url;
-        
+
       // }
 
       const salt = bcrypt.genSaltSync(10);
