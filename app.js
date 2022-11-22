@@ -1,5 +1,7 @@
 var createError = require('http-errors');
+
 var express = require('express');
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -7,8 +9,12 @@ var logger = require('morgan');
 var albumRouter = require('./routes/album');
 var productRouter = require('./routes/product');
 var playlistRouter = require('./routes/playlist');
-var indexRouter = require('./routes/index');
+var playlistProductRouter = require('./routes/playlistProduct');
 var usersRouter = require('./routes/users');
+
+//CUSTOME
+const dotenv = require('dotenv')
+dotenv.config();
 
 var app = express();
 
@@ -29,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/album', albumRouter);
 app.use('/product', productRouter);
 app.use('/playlist', playlistRouter);
-app.use('/index', indexRouter);
+app.use('/playlistProduct', playlistProductRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
@@ -46,6 +52,17 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render("error");
 });
 
 module.exports = app;

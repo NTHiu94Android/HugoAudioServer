@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
+const cloudinary = require("../utils/cloudinary");
+const upload = require("../utils/multer");
 
 const userModel = require('../models/userModel');
 const playlistModel = require('../models/playlistModel');
@@ -22,8 +26,13 @@ router.post('/dang-nhap', async function (req, res, next) {
   try {
     const user = await userModel.findOne({ 'username': req.body.username });
     if (user != null) {
-      if (user.username == req.body.username && user.password == req.body.password) {
-        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: user });
+      if (user.username == req.body.username && await bcrypt.compare(req.body.password, user.password)) {
+        const token = jwt.sign(
+          { username: user.username, _id: user._id },
+          process.env.JWT_SECRET,
+          { expiresIn: '900s' }
+        );
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: user, accessToken: token });
       } else {
         res.status(422).json({ error: true, responeTime: new Date(), statusCode: 422, message: 'Invalid username' });
       }
@@ -37,12 +46,33 @@ router.post('/dang-nhap', async function (req, res, next) {
 
 //Đăng ký user (Da xong)
 //http://localhost:3000/users/dang-ky 
-router.post('/dang-ky', async function (req, res, next) {
+router.post('/dang-ky', upload.single("image"), async function (req, res, next) {
   try {
+
     const user = await userModel.findOne({ 'username': req.body.username });
+    
     if (user == null) {
       //Tao moi user
-      const us = new userModel(req.body);
+      const username = req.body.username;
+      const password = req.body.password;
+      const email = req.body.email;
+      const numberPhone = req.body.numberPhone;
+      const birthDay = req.body.birthDay;
+      const gender = req.body.gender;
+      const userType = req.body.userType;
+      const image = req.body.image;
+      
+      // if(!req.file){
+      //   console.log(req.file);
+      //   const result = await cloudinary.uploader.upload(req.file.path);
+      //   image = result.secure_url;
+        
+      // }
+
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(password, salt);
+
+      const us = new userModel({ username, password: hash, email, numberPhone, birthDay, gender, userType, image });
       await us.save();
       res.json({ error: false, responeTime: new Date(), statusCode: 200, data: us });
       //Tao playlist favorite khi tao user moi
