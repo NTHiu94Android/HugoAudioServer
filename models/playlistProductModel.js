@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 const playlistDetailModel = new Schema({
   playlistId: { type: String },
   productId: { type: String },
-  creationDate: { type: String, default: '01/01/2022' },
+  creationDate: { type: Date, default: Date.now },
   //updateAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('playlistDetailModel', playlistDetailModel);
+module.exports = mongoose.model('playlistProductModel', playlistDetailModel);

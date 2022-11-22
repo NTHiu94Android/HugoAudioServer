@@ -25,11 +25,23 @@ router.get('/chi-tiet-product', async function (req, res, next) {
     }
 });
 
+//Lay products theo playlistid
+//http://localhost:3000/product/get-products-theo-playlistid
+
+router.post('/get-products-theo-playlistid', async function (req, res, next) {
+    try {
+        const products = await product_model.find({'playlistId': req.body.playlistId});
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: products });
+    } catch (error) {
+        res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
+    }
+});
+
 //Lay products theo userid 
 //http://localhost:3000/product/get-products-theo-userid
 router.post('/get-products-theo-userid', async function (req, res, next) {
     try {
-        const products = await product_model.findOne({'userId': req.body.userId});
+        const products = await product_model.find({'userId': req.body.userId});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: products });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });

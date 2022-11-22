@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const playlist_model = require('../models/playlistModel');
+const product_model = require('../models/productModel');
 
 //Lay danh sach playlist (Da xong)
 //http://localhost:3000/playlist/get-playlists
@@ -59,7 +60,14 @@ router.patch('/cap-nhat-playlist/:id', async function (req, res, next) {
 //http://localhost:3000/playlist/xoa-playlist/:id
 router.delete('/xoa-playlist/:id', async function (req, res, next) {
     try {
+        //Xoa playlist
         await playlist_model.findByIdAndDelete(req.params.id, req.body);
+        //Xoa product trong playlist
+        const products = await products.find('playlistId', req.params.id);
+        for (let index = 0; index < products.length; index++) {
+            const product = products[index];
+            await product_model.findByIdAndDelete(product._id);
+        }
         const playlist = await playlist_model.findById(req.params.id);
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: playlist });
     } catch (error) {

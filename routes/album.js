@@ -19,7 +19,7 @@ router.get('/get-album', async function (req, res, next) {
 //http://localhost:3000/album/get-albums-theo-userid
 router.post('/get-albums-theo-userid', async function (req, res, next) {
     try {
-        const albums = await album_model.findOne({'userId': req.body.userId});
+        const albums = await album_model.find({'userId': req.body.userId});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: albums });
     } catch (error) {
         res.json({ error: true, responeTime: new Date(), statusCode: 500, message: error.message });
