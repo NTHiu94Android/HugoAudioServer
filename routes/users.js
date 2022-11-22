@@ -8,7 +8,6 @@ const upload = require("../utils/multer");
 const userModel = require('../models/userModel');
 const playlistModel = require('../models/playlistModel');
 
-/* GET users listing. */
 //Lay danh sach user (Da xong)
 //http://localhost:3000/users/get-user 
 router.get('/get-users', async function (req, res, next) {
@@ -32,7 +31,7 @@ router.post('/dang-nhap', async function (req, res, next) {
           process.env.JWT_SECRET,
           { expiresIn: '900s' }
         );
-        res.json({ error: false, responeTime: new Date(), statusCode: 200, data: user, accessToken: token });
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, accessToken: token, data: user});
       }else{
         res.status(422).json({ error: true, responeTime: new Date(), statusCode: 422, message: 'Invalid password' });
       }
@@ -48,9 +47,7 @@ router.post('/dang-nhap', async function (req, res, next) {
 //http://localhost:3000/users/dang-ky 
 router.post('/dang-ky', upload.single("image"), async function (req, res, next) {
   try {
-
     const user = await userModel.findOne({ 'username': req.body.username });
-
     if (user == null) {
       //Tao moi user
       const username = req.body.username;
@@ -66,7 +63,6 @@ router.post('/dang-ky', upload.single("image"), async function (req, res, next) 
       //   console.log(req.file);
       //   const result = await cloudinary.uploader.upload(req.file.path);
       //   image = result.secure_url;
-
       // }
 
       const salt = bcrypt.genSaltSync(10);
