@@ -3,14 +3,14 @@ var router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const upload = require("../utils/multer");
-const auth  = require("../middleware/auth");
+const auth = require("../middleware/auth");
 
 const userModel = require('../models/userModel');
 const playlistModel = require('../models/playlistModel');
 
-//Lay danh sach user (Da xong)
+//Lay danh sach user
 //http://localhost:3000/users/get-usersRouter
-router.get('/get-users',[auth.checkToken], async function (req, res, next) {
+router.get('/get-users', [auth.checkToken], async function (req, res, next) {
   try {
     const users = await userModel.find({});
     res.json({ error: false, responeTime: new Date(), statusCode: 200, data: users });
@@ -19,20 +19,20 @@ router.get('/get-users',[auth.checkToken], async function (req, res, next) {
   }
 });
 
-//Dang nhap (Da xong)
+//Dang nhap
 //http://localhost:3000/users/dang-nhap
 router.post('/dang-nhap', async function (req, res, next) {
   try {
     const user = await userModel.findOne({ 'username': req.body.username });
     if (user != null) {
-      if(await bcrypt.compare(req.body.password, user.password)){
+      if (await bcrypt.compare(req.body.password, user.password)) {
         const token = jwt.sign(
           { username: user.username, _id: user._id },
           process.env.JWT_SECRET,
           { expiresIn: '900s' }
         );
-        res.json({ error: false, responeTime: new Date(), statusCode: 200, accessToken: token, data: user});
-      }else{
+        res.json({ error: false, responeTime: new Date(), statusCode: 200, accessToken: token, data: user });
+      } else {
         res.status(422).json({ error: true, responeTime: new Date(), statusCode: 422, message: 'Invalid password' });
       }
     } else {
@@ -43,7 +43,7 @@ router.post('/dang-nhap', async function (req, res, next) {
   }
 });
 
-//Đăng ký user (Da xong)
+//Đăng ký user
 //http://localhost:3000/users/dang-ky 
 router.post('/dang-ky', upload.single("image"), async function (req, res, next) {
   try {
@@ -84,9 +84,23 @@ router.post('/dang-ky', upload.single("image"), async function (req, res, next) 
 
 //Cap nhat user
 //http://localhost:3000/users/cap-nhat/:id
-router.patch('/cap-nhat/:id',[auth.checkToken], async function (req, res, next) {
+router.patch('/cap-nhat/:id', [auth.checkToken], async function (req, res, next) {
   try {
-    await userModel.findByIdAndUpdate(req.params.id, req.body);
+    const username = req.body.username;
+    const password = req.body.password;
+    const email = req.body.email;
+    const numberPhone = req.body.numberPhone;
+    const birthDay = req.body.birthDay;
+    const gender = req.body.gender;
+    const userType = req.body.userType;
+    const image = req.body.image;
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+
+    await userModel.findByIdAndUpdate(
+      req.params.id,
+      { username, password: hash, email, numberPhone, birthDay, gender, userType, image }
+    );
     const us = await userModel.findById(req.params.id);
     res.json({ error: false, responeTime: new Date(), statusCode: 200, data: us });
   } catch (error) {
@@ -96,7 +110,7 @@ router.patch('/cap-nhat/:id',[auth.checkToken], async function (req, res, next) 
 
 //Xoa user
 //http://localhost:3000/users/xoa/:id
-router.delete('/xoa/:id', async function (req, res, next) {
+router.delete('/xoa/:id', [auth.checkToken], async function (req, res, next) {
   try {
     await userModel.findByIdAndDelete(req.params.id, req.body);
     const us = await userModel.findById(req.params.id);
