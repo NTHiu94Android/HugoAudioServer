@@ -4,9 +4,11 @@ var router = express.Router();
 const album_model = require('../models/albumModel');
 const product_model = require('../models/productModel');
 
+const auth = require("../middleware/auth");
+
 //Lay danh sach album (Da xong)
 //http://localhost:3000/album/get-album
-router.get('/get-album', async function (req, res, next) {
+router.get('/get-album', [auth.checkToken], async function (req, res, next) {
     try {
         const albums = await album_model.find({});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: albums });
@@ -17,7 +19,7 @@ router.get('/get-album', async function (req, res, next) {
 
 //Lay danh sach album theo userid(Da xong)
 //http://localhost:3000/album/get-albums-theo-userid
-router.post('/get-albums-theo-userid', async function (req, res, next) {
+router.post('/get-albums-theo-userid', [auth.checkToken], async function (req, res, next) {
     try {
         const albums = await album_model.find({'userId': req.body.userId});
         res.json({ error: false, responeTime: new Date(), statusCode: 200, data: albums });
@@ -28,7 +30,7 @@ router.post('/get-albums-theo-userid', async function (req, res, next) {
 
 //Them moi album (Da xong)
 //http://localhost:3000/album/them-moi-album
-router.post('/them-moi-album', async function (req, res, next) {
+router.post('/them-moi-album', [auth.checkToken], async function (req, res, next) {
     try {
         const album = await album_model.findOne({ 'name': req.body.name });
         if (album == null) {
@@ -45,7 +47,7 @@ router.post('/them-moi-album', async function (req, res, next) {
 
 //Cap nhat album
 //http://localhost:3000/album/cap-nhat-album/:id
-router.patch('/cap-nhat-album/:id', async function (req, res, next) {
+router.patch('/cap-nhat-album/:id', [auth.checkToken], async function (req, res, next) {
     try {
         await album_model.findByIdAndUpdate(req.params.id, req.body);
         const album = await album_model.findById(req.params.id);
@@ -57,7 +59,7 @@ router.patch('/cap-nhat-album/:id', async function (req, res, next) {
 
 //Xoa album
 //http://localhost:3000/album/xoa-album/:id
-router.delete('/xoa-album/:id', async function (req, res, next) {
+router.delete('/xoa-album/:id', [auth.checkToken], async function (req, res, next) {
     try {
         await album_model.findByIdAndDelete(req.params.id, req.body);
         const album = await album_model.findById(req.params.id);

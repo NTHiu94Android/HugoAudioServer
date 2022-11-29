@@ -59,12 +59,6 @@ router.post('/dang-ky', upload.single("image"), async function (req, res, next) 
       const userType = req.body.userType;
       const image = req.body.image;
 
-      // if(!req.file){
-      //   console.log(req.file);
-      //   const result = await cloudinary.uploader.upload(req.file.path);
-      //   image = result.secure_url;
-      // }
-
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(password, salt);
 
