@@ -2,15 +2,15 @@ var express = require('express');
 var router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
-const cloudinary = require("../utils/cloudinary");
 const upload = require("../utils/multer");
+const auth  = require("../middleware/auth");
 
 const userModel = require('../models/userModel');
 const playlistModel = require('../models/playlistModel');
 
 //Lay danh sach user (Da xong)
-//http://localhost:3000/users/get-user 
-router.get('/get-users', async function (req, res, next) {
+//http://localhost:3000/users/get-usersRouter
+router.get('/get-users',[auth.checkToken], async function (req, res, next) {
   try {
     const users = await userModel.find({});
     res.json({ error: false, responeTime: new Date(), statusCode: 200, data: users });
@@ -84,7 +84,7 @@ router.post('/dang-ky', upload.single("image"), async function (req, res, next) 
 
 //Cap nhat user
 //http://localhost:3000/users/cap-nhat/:id
-router.patch('/cap-nhat/:id', async function (req, res, next) {
+router.patch('/cap-nhat/:id',[auth.checkToken], async function (req, res, next) {
   try {
     await userModel.findByIdAndUpdate(req.params.id, req.body);
     const us = await userModel.findById(req.params.id);
