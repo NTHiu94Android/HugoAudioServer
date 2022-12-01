@@ -19,6 +19,6 @@ exports.checkToken = function (request, response, next) {
       }
     });
   } else {
-    response.json({ status: false });
+    response.json({ error: true, statusCode: 404, responeTime: new Date(), message: 'Result not found', name: 'NotFoundError'  });
   }
 };

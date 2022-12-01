@@ -26,11 +26,7 @@ router.post('/dang-nhap', async function (req, res, next) {
     const user = await userModel.findOne({ 'username': req.body.username });
     if (user != null) {
       if (await bcrypt.compare(req.body.password, user.password)) {
-        const token = jwt.sign(
-          { username: user.username, _id: user._id },
-          process.env.JWT_SECRET,
-          { expiresIn: '900s' }
-        );
+        const token = jwt.sign({ username: user.username, _id: user._id }, process.env.JWT_SECRET, { expiresIn: '900s' });
         res.json({ error: false, responeTime: new Date(), statusCode: 200, accessToken: token, data: user });
       } else {
         res.status(422).json({ error: true, responeTime: new Date(), statusCode: 422, message: 'Invalid password' });
