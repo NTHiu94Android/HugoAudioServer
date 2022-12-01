@@ -11,7 +11,7 @@ exports.checkToken = function (request, response, next) {
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, function (error, decoded) {
       if (error) {
-        response.json({ status: false });
+        response.json({ error: true, statusCode: 404, responeTime: new Date(), message: 'Result not found', name: 'NotFoundError'  });
       } else {
         console.log(decoded);
         request.user = decoded;
